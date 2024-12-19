@@ -3,20 +3,40 @@ import re
 
 dados_usuarios = {}
 urls = {
-    "https://www.google.com", "https://www.google.com.br", "www.google.com.br", "www.google.com.",
-    "https://www.youtube.com", "https://www.globo.com", "https://www.whatsapp.com", "https://www.instagram.com/"
-    "https://www.facebook.com/", "https://www.uol.com.br/", "https://www.mercadolivre.com.br/", "https://www.amazon.com.br/",
-    "https://chatgpt.com/", "https://x.com/", "https://www.caixa.gov.br/", "https://www.santander.com.br/", "https://www.bb.com.br/"
-    "https://shopee.com.br/", "https://www.tiktok.com/", "https://www.netflix.com/br/", "https://www.primevideo.com/", "https://www.max.com/br/pt",
-    "https://pt.wikipedia.org/", "https://www.twitch.tv/", "https://discord.com/", "https://nubank.com.br/", "https://www.detran.pe.gov.br/", "https://servicos.compesa.com.br/",
-    "https://www.neoenergia.com/", "https://sigs.ufrpe.br/", "https://www.ufrpe.br/", "https://g1.globo.com/", "https://www.mozilla.org/", "https://pt.aliexpress.com/",
-    "https://www.microsoft.com/pt-br/", "https://github.com/", "https://web.telegram.org/a/", "https://web.whatsapp.com/", "https://www.gov.br/pt-br",
-    "https://br.pinterest.com/", "https://www.reddit.com/", "https://www.olx.com.br/", "https://www.linkedin.com/", "https://code.visualstudio.com/", "https://www.jetbrains.com/pt-br/pycharm/",
-    "https://workspace.google.com/intl/pt-BR/gmail/", "https://mail.google.com/", "https://www.google.com.br/maps/", "https://workspace.google.com/intl/pt-BR/products/meet/", "https://www.americanas.com.br/",
-    "https://workspace.google.com/intl/pt-BR/products/drive/", "https://sites.google.com/view/classroom-workspace/", "https://www.crunchyroll.com/pt-br/", "https://www.correios.com.br/", "https://www.magazineluiza.com.br/",
-    "https://www.casasbahia.com.br/", "https://www.reclameaqui.com.br/", "https://www.zoom.com/pt", "https://www.oi.com.br/", "https://www.claro.com.br/", "https://www.tim.com.br/pe", "https://www.tim.com.br/", "https://vivo.com.br/para-voce",
-    "https://vivo.com.br/", "https://www.ifood.com.br/", "https://www.cittamobi.com.br/", "https://www.decolar.com/", "https://www.airbnb.com.br/", "https://veja.abril.com.br/", "https://assine.abril.com.br/", "https://www.cnnbrasil.com.br/",
-    "https://www.tudogostoso.com.br/", "https://store.steampowered.com/", "https://store.epicgames.com/", "https://www.nintendo.com/", "https://www.youtube.com/"
+    "ecommerce": {
+        "https://www.mercadolivre.com.br/",
+        "https://www.amazon.com.br/",
+        "https://www.americanas.com.br/",
+        "https://www.magazineluiza.com.br/",
+        "https://www.casasbahia.com.br/",
+        "https://shopee.com.br/"
+    },
+    "bancos": {
+        "https://www.caixa.gov.br/",
+        "https://www.santander.com.br/",
+        "https://www.bb.com.br/",
+        "https://nubank.com.br/"
+    },
+    "operadoras": {
+        "https://www.oi.com.br/",
+        "https://www.claro.com.br/",
+        "https://www.tim.com.br/pe",
+        "https://www.tim.com.br/",
+        "https://vivo.com.br/para-voce",
+        "https://vivo.com.br/"
+    },
+    "jogos": {
+        "https://store.steampowered.com/",
+        "https://store.epicgames.com/",
+        "https://www.nintendo.com/",
+        "https://www.crunchyroll.com/pt-br/"
+    },
+    "governo": {
+        "https://www.gov.br/pt-br",
+        "https://www.detran.pe.gov.br/",
+        "https://servicos.compesa.com.br/",
+        "https://www.neoenergia.com/"
+    }
 }
 
 def limpar_terminal():
@@ -61,29 +81,23 @@ def validar_senha():
 def validar_url():
     while True:
         url = input("Copie e cole uma URL do seu navegador ou digite no formato 'https://www.google.com.br/': ").strip().lower()
-        
-        # Compara diretamente com a lista de URLs conhecidas
-        if url in urls:
-            print("✅ URL válida e está presente na lista de URLs seguras.")
-            return url
-        else:
-            print("❌ URL inválida: Não consta na lista de URLs seguras.")
-            print(f"Você digitou: {url}")
-            print("Tente novamente ou verifique a URL inserida.")
-
+        for categoria, lista in urls.items():
+            if url in lista:
+                print(f"✅ URL válida e está presente na categoria: {categoria.capitalize()}.")
+                return url
+        print("❌ URL inválida: Não consta na lista de URLs seguras.")
+        print(f"Você digitou: {url}")
+        print("Tente novamente ou verifique a URL inserida.")
 
 def validar_telefone():
     while True:
         telefone = input("Digite um número de telefone (Ex: (DDD) 9 1234-5678 ou similar): ").strip()
-        telefone_limpo = re.sub(r"\D", "", telefone)  # Remove caracteres não numéricos
+        telefone_limpo = re.sub(r"\D", "", telefone)
         if len(telefone_limpo) > 15:
             print("Número inválido. Deve conter no máximo 15 dígitos.")
             continue
 
-        spam_palavras = [
-            ("0303", "canal de vendas"), ("9090", "chamada a cobrar"),
-            ("0555", "possível spam"), ("05555", "possível spam")
-        ]
+        spam_palavras = [("0303", "canal de vendas"), ("0555", "possível spam")]
 
         for prefixo, descricao in spam_palavras:
             if telefone_limpo.startswith(prefixo):
@@ -91,24 +105,18 @@ def validar_telefone():
                 return
 
         ddds = {
-            "81": "PE", "87": "PE", "82": "AL", "71": "BA", "72": "BA",
-            "73": "BA", "74": "BA", "75": "BA", "76": "BA", "77": "BA",
-            "85": "CE", "88": "CE", "98": "MA", "99": "MA", "83": "PB",
-            "86": "PI", "89": "PI", "84": "RN", "79": "SE", "61": "DF",
-            "62": "GO", "64": "GO", "65": "MT", "66": "MT", "67": "MS",
-            "27": "ES", "28": "ES", "31": "MG", "32": "MG", "33": "MG",
-            "34": "MG", "35": "MG", "36": "MG", "37": "MG", "38": "MG",
-            "21": "RJ", "22": "RJ", "24": "RJ", "11": "SP", "12": "SP",
-            "13": "SP", "14": "SP", "15": "SP", "16": "SP", "17": "SP",
-            "18": "SP", "19": "SP", "41": "PN", "42": "PN", "43": "PN",
-            "44": "PN", "45": "PN", "46": "PN", "51": "RS", "52": "RS",
-            "53": "RS", "54": "RS", "55": "RS", "47": "SC", "48": "SC",
-            "49": "SC", "68": "AC", "96": "AP", "92": "AM", "97": "AM",
-            "91": "PA", "93": "PA", "94": "PA", "69": "RO", "95": "RR",
-            "63": "TO"
+            "81": "PE", "87": "PE", "82": "AL", "71": "BA", "85": "CE",
+            "98": "MA", "83": "PB", "86": "PI", "84": "RN", "79": "SE"
         }
-        ddd = telefone_limpo[:2]
-        if ddd in ddds:
+        ddd = telefone_limpo[4:6] if telefone_limpo.startswith("9090") else telefone_limpo[:2]
+        
+        if telefone_limpo.startswith("9090"):
+            if ddd in ddds:
+                print(f"Número a cobrar do DDD {ddd}, localizado em {ddds[ddd]}.")
+                return
+            print("Número a cobrar, mas DDD inválido.")
+            return
+        elif ddd in ddds:
             print(f"Número pertence a {ddds[ddd]}.")
             return
         print("Formato de número inválido.")
